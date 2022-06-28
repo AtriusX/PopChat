@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.7.1"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("org.flywaydb.flyway") version "8.5.13"
     kotlin("jvm") version "1.6.10"
     kotlin("plugin.spring") version "1.6.10"
     kotlin("plugin.jpa") version "1.6.10"
@@ -14,6 +15,7 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 repositories {
     mavenCentral()
     maven { url = uri("https://repo.spring.io/milestone") }
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -24,8 +26,17 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
 
+    // Redis Client
+    implementation("io.lettuce:lettuce-core:6.1.8.RELEASE")
+
+    // ULID identifiers
+    implementation("com.github.guepardoapps:kulid:2.0.0.0")
+
+    // Argon Hashing Algorithm
+    implementation("com.lambdapioneer.argon2kt:argon2kt:1.3.0")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 
@@ -42,4 +53,16 @@ tasks.withType<KotlinCompile> {
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+}
+
+val dbUrl: String by project
+val dbUser: String by project
+val dbPass: String by project
+
+flyway {
+    url = dbUrl
+    user = dbUser
+    password = dbPass
+    placeholderReplacement = true
+    locations = arrayOf("filesystem:$projectDir/sql/db/migrations")
 }
