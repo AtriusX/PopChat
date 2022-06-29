@@ -23,6 +23,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -33,11 +34,9 @@ dependencies {
     // ULID identifiers
     implementation("com.github.guepardoapps:kulid:2.0.0.0")
 
-    // Argon Hashing Algorithm
-    implementation("com.lambdapioneer.argon2kt:argon2kt:1.3.0")
-
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 
     // MockK
