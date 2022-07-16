@@ -17,7 +17,8 @@ comment on table trait is
 
 create table if not exists user_profile
 (
-    user_id       varchar(26) primary key         not null,
+    user_id       varchar(26) primary key         not null
+        constraint user_id_pattern check ( user_id similar to '([A-HJ-NP-TV-Z0-9]){26}' ),
     display_name  varchar(20)                     not null
         constraint check_min_length check ( length(display_name) >= 4 ),
     avatar        bytea,
@@ -100,7 +101,8 @@ comment on table user_session is
 
 create table if not exists channel
 (
-    channel_id    varchar(26) primary key   not null,
+    channel_id    varchar(26) primary key   not null
+        constraint channel_id_pattern check ( channel_id similar to '([A-HJ-NP-TV-Z0-9]){26}' ),
     name          varchar(200)              not null
         constraint name_not_empty check ( (name = '') is false ),
     channel_type  varchar(10) default 'PRIVATE'
@@ -172,7 +174,8 @@ comment on table user_connection is
 
 create table message
 (
-    message_id    varchar(26) primary key   not null,
+    message_id    varchar(26) primary key   not null
+        constraint message_id_pattern check ( message_id similar to '([A-HJ-NP-TV-Z0-9]){26}' ),
     channel_id    varchar(26)               not null
         constraint fk_channel
             references channel (channel_id)
@@ -202,21 +205,20 @@ comment on table message_attachment is
 
 -- ACTION
 
-create table if not exists server_moderator_action
+create table if not exists moderator_action
 (
     user_id         varchar(26)                not null
         constraint fk_user_profile
-            references user_profile (user_id)
-            on delete cascade,
+            references user_profile (user_id),
     action          varchar(10) default 'WARN' not null
         constraint action_options check ( action in ('WARN', 'KICK', 'TEMPBAN', 'BAN') ),
     reason          varchar(500),
     creation_time   timestamptz default now()  not null,
     expiration_time timestamptz
-        constraint check_time check ( expiration_time > creation_time )
+        constraint check_time check ( expiration_time is null or expiration_time > creation_time )
 );
 
-comment on table server_moderator_action is
+comment on table moderator_action is
     'An action taken against a user for breaking rules that applies across the entire application.';
 
 create table if not exists channel_moderator_action
@@ -224,8 +226,18 @@ create table if not exists channel_moderator_action
     channel_id varchar(26) not null
         constraint fk_channel
             references channel (channel_id)
-            on delete cascade
-) inherits (server_moderator_action);
+) inherits (moderator_action);
 
 comment on table channel_moderator_action is
     'An action taken against a user for breaking rules that applies to a single channel.';
+
+-- ADMIN
+
+create table if not exists admin
+(
+    user_id       varchar(26) unique        not null
+        constraint fk_user_profile
+            references user_profile (user_id)
+            on delete cascade,
+    creation_time timestamptz default now() not null
+);
