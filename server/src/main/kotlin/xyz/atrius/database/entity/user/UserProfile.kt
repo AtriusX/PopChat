@@ -3,6 +3,8 @@ package xyz.atrius.database.entity.user
 import com.github.guepardoapps.kulid.ULID
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
+import xyz.atrius.dto.user.UserProfileDTO
+import xyz.atrius.transfer.DtoTranslation
 import java.sql.Timestamp
 import java.time.Instant
 import javax.persistence.Column
@@ -44,12 +46,22 @@ class UserProfile(
     val creationTime: Timestamp = Timestamp.from(Instant.now()),
 
     @UpdateTimestamp
-    @Column(name = "update_time")
+    @Column(name = "update_time", insertable = false)
     var updateTime: Timestamp? = null,
 
     @Column(name = "deleted", nullable = false)
     var deleted: Boolean = false
-) {
+) : DtoTranslation<UserProfileDTO> {
+    override fun asDto(): UserProfileDTO = UserProfileDTO(
+        displayName = displayName,
+        avatar = avatar?.let { String(it) },
+        status = status,
+        description = description,
+        pronouns = pronouns,
+        title = title,
+        creationTime = creationTime
+    )
+
     override fun equals(other: Any?): Boolean =
         (other as? UserProfile)?.userId == userId
 
