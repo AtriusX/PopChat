@@ -18,4 +18,6 @@ interface DtoTranslation<T> {
      * @return The newly DTO object.
      */
     fun asDto(): T
+
+    fun fromDto(input: T)
 }

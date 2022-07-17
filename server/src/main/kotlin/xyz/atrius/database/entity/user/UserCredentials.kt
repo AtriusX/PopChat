@@ -13,5 +13,5 @@ data class UserCredentials(
     val user: UserProfile,
 
     @Column(name = "password_hash")
-    val passwordHash: String
+    var passwordHash: String
 ) : Serializable

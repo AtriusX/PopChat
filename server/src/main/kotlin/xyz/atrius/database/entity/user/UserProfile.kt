@@ -52,15 +52,24 @@ class UserProfile(
     @Column(name = "deleted", nullable = false)
     var deleted: Boolean = false
 ) : DtoTranslation<UserProfileDTO> {
+
     override fun asDto(): UserProfileDTO = UserProfileDTO(
         displayName = displayName,
         avatar = avatar?.let { String(it) },
         status = status,
         description = description,
         pronouns = pronouns,
-        title = title,
-        creationTime = creationTime
+        title = title
     )
+
+    override fun fromDto(input: UserProfileDTO) {
+        displayName = input.displayName
+        avatar = input.avatar?.toByteArray()
+        status = input.status
+        description = input.description
+        pronouns = input.pronouns
+        title = input.title
+    }
 
     override fun equals(other: Any?): Boolean =
         (other as? UserProfile)?.userId == userId

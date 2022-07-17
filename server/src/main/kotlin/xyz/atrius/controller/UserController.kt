@@ -12,10 +12,11 @@ import xyz.atrius.manager.UserManager
 import xyz.atrius.message.ServerMessage
 import xyz.atrius.util.Response
 import xyz.atrius.util.asResponse
+import xyz.atrius.util.mergeAsResponse
 
 @RestController
 class UserController(
-    private val manager: UserManager,
+    private val userManager: UserManager,
 ) {
     companion object {
         private val logger = LoggerFactory.getLogger(UserController::class.java)
@@ -28,9 +29,9 @@ class UserController(
     @GetMapping("/user/{user}")
     fun getUser(
         @PathVariable user: ULIDIdentifier,
-        @RequestBody body: AuthorizedRequest?
-    ): Response<UserProfileDTO> = manager
-        .getUser(user, body)
+        @RequestBody body: AuthorizedRequest
+    ): Response<UserProfileDTO> = userManager
+        .getUser(user, body.token)
         .map(UserProfile::asDto)
         .tapLeft { logger.error(it.message) }
         .asResponse()
@@ -43,9 +44,9 @@ class UserController(
     fun updateUser(
         @PathVariable user: ULIDIdentifier,
         @RequestBody body: UserProfileDTO,
-    ): Response<ServerMessage> = manager
+    ): Response<ServerMessage> = userManager
         .updateUser(user, body)
-        .asResponseEntity()
+        .mergeAsResponse()
 
     /**
      * Updates a given user’s password. Returns a ServerMessage if the update was successful
@@ -55,9 +56,9 @@ class UserController(
     fun updateUserPassword(
         @PathVariable user: ULIDIdentifier,
         @RequestBody body: UserCredentialsUpdateRequest
-    ): Response<ServerMessage> = manager
+    ): Response<ServerMessage> = userManager
         .updatePassword(user, body)
-        .asResponseEntity()
+        .mergeAsResponse()
 
     /**
      * Deletes a user account completely from the application. Returns the ULID of the deleted
@@ -67,7 +68,7 @@ class UserController(
     fun deleteUser(
         @PathVariable user: ULIDIdentifier,
         @RequestBody body: UserDeleteRequest
-    ): Response<ULIDIdentifier> = manager
+    ): Response<ULIDIdentifier> = userManager
         .deleteUser(user, body)
         .asResponse()
 }
