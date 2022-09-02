@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import xyz.atrius.dto.user.UserProfileDTO
 import xyz.atrius.transfer.DtoTranslation
+import java.io.Serializable
 import java.sql.Timestamp
 import java.time.Instant
 import javax.persistence.Column
@@ -51,7 +52,8 @@ class UserProfile(
 
     @Column(name = "deleted", nullable = false)
     var deleted: Boolean = false
-) : DtoTranslation<UserProfileDTO> {
+
+) : DtoTranslation<UserProfileDTO>, Serializable {
 
     override fun asDto(): UserProfileDTO = UserProfileDTO(
         displayName = displayName,

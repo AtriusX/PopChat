@@ -1,0 +1,13 @@
+spring:
+    profiles:
+        active: dev
+    datasource:
+        url: postgresql://localhost:5432/popchat
+        username: postgres
+        password: password
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        generate-ddl: false
+        hibernate:
+            ddl-auto: none
+        database: postgresql

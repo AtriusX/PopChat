@@ -14,6 +14,7 @@ class PopChat
 fun main(args: Array<String>) {
     runApplication<PopChat>(*args)
 }
+
 @RestController
 object ChatController {
     var counter = 1

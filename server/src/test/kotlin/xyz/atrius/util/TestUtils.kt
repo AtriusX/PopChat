@@ -1,9 +1,12 @@
 package xyz.atrius.util
 
 import io.kotest.core.spec.style.scopes.DescribeSpecContainerScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 fun DescribeSpecContainerScope.beforeTestBlocking(
-    block: () -> Unit
+    block: CoroutineScope.() -> Unit
 ) = beforeTest {
-    block()
+    withContext(Dispatchers.IO, block)
 }

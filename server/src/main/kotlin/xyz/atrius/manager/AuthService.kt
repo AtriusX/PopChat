@@ -16,7 +16,7 @@ import xyz.atrius.util.Message
 @Service
 class AuthService(
     private val credentialsRepository: UserCredentialsRepository,
-    private val argon2PasswordEncoder: Argon2PasswordEncoder
+    private val passwordEncoder: Argon2PasswordEncoder
 ) {
 
     fun isAuthorized(ulid: ULIDIdentifier, token: String?): Message<ULIDIdentifier> =
@@ -46,7 +46,7 @@ class AuthService(
             .bind()
         val creds = getCredentials(ulid, token)
             .bind()
-        if (!argon2PasswordEncoder.matches(password, creds.passwordHash)) {
+        if (!passwordEncoder.matches(password, creds.passwordHash)) {
             ServerMessage.WrongPassword
                 .left()
                 .bind<ServerMessage>()
@@ -65,7 +65,7 @@ class AuthService(
             .bind()
         val creds = getCredentials(ulid, token)
             .bind()
-        creds.passwordHash = argon2PasswordEncoder.encode(newPassword)
+        creds.passwordHash = passwordEncoder.encode(newPassword)
         credentialsRepository.save(creds)
         ServerMessage.Ok
     }

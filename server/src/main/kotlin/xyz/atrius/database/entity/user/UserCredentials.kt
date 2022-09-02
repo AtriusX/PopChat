@@ -1,5 +1,6 @@
 package xyz.atrius.database.entity.user
 
+import xyz.atrius.database.ULIDIdentifier
 import java.io.Serializable
 import javax.persistence.*
 
@@ -8,7 +9,11 @@ import javax.persistence.*
 data class UserCredentials(
 
     @Id
-    @OneToOne(orphanRemoval = true)
+    @Column(name = "user_id")
+    val id: ULIDIdentifier,
+
+    @MapsId
+    @OneToOne
     @JoinColumn(name = "user_id")
     val user: UserProfile,
 

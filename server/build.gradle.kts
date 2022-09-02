@@ -29,17 +29,17 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     // Redis Client
-    implementation("io.lettuce:lettuce-core:6.1.8.RELEASE")
+    implementation("io.lettuce:lettuce-core:6.2.0.RELEASE")
 
     // ULID identifiers
     implementation("com.github.guepardoapps:kulid:2.0.0.0")
 
-    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.1")
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testImplementation("org.springframework.security:spring-security-test")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
 
     // MockK
     testImplementation("com.ninja-squad:springmockk:3.1.1")
