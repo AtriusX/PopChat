@@ -14,6 +14,7 @@ import xyz.atrius.database.entity.user.UserCredentials
 import xyz.atrius.database.repository.UserCredentialsRepository
 import xyz.atrius.dto.user.UserCredentialsUpdateRequest
 import xyz.atrius.message.ServerMessage
+import xyz.atrius.service.AuthService
 import xyz.atrius.util.Message
 import xyz.atrius.util.SpringDescribeSpec
 import java.util.*
@@ -65,10 +66,7 @@ class AuthServiceSpec : SpringDescribeSpec({
                     redisClient
                 )
             ) {
-                every { isAuthorized(testUlid, testToken) } answers {
-                    println("TEST")
-                    testUlid.right()
-                }
+                every { isAuthorized(testUlid, testToken) } returns testUlid.right()
             }
         }
 

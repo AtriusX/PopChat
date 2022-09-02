@@ -11,6 +11,7 @@ import xyz.atrius.dto.user.UserCredentialsUpdateRequest
 import xyz.atrius.dto.user.UserDeleteRequest
 import xyz.atrius.dto.user.UserProfileDTO
 import xyz.atrius.message.ServerMessage
+import xyz.atrius.service.AuthService
 import xyz.atrius.util.Message
 
 @Component

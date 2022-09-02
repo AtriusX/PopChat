@@ -1,4 +1,4 @@
-package xyz.atrius.manager
+package xyz.atrius.service
 
 import arrow.core.continuations.either
 import arrow.core.left
