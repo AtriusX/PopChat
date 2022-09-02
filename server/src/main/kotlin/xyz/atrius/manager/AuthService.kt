@@ -3,6 +3,7 @@ package xyz.atrius.manager
 import arrow.core.continuations.either
 import arrow.core.left
 import arrow.core.rightIfNotNull
+import io.lettuce.core.RedisClient
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import org.springframework.stereotype.Service
 import xyz.atrius.database.ULIDIdentifier
@@ -16,15 +17,29 @@ import xyz.atrius.util.Message
 @Service
 class AuthService(
     private val credentialsRepository: UserCredentialsRepository,
-    private val passwordEncoder: Argon2PasswordEncoder
+    private val passwordEncoder: Argon2PasswordEncoder,
+    private val redisClient: RedisClient,
 ) {
 
-    fun isAuthorized(ulid: ULIDIdentifier, token: String?): Message<ULIDIdentifier> =
-        TODO("Auth service logic")
+    fun isAuthorized(ulid: ULIDIdentifier, token: String?): Message<ULIDIdentifier> = either.eager {
+        val cache = redisClient.connect().sync()
+            .get(ulid)
+            .also { redisClient.close() }
+            .rightIfNotNull {
+                ServerMessage.NotFound(ULIDIdentifier::class, ulid)
+            }
+            .bind()
+        if (cache != token) {
+            ServerMessage.NotAuthorized(token)
+                .left()
+                .bind<ServerMessage>()
+        }
+        ulid
+    }
 
     fun getCredentials(
         ulid: ULIDIdentifier,
-        token: String?
+        token: String?,
     ): Message<UserCredentials> = either.eager {
         isAuthorized(ulid, token)
             .bind()
@@ -40,10 +55,8 @@ class AuthService(
     fun isCorrectPassword(
         ulid: ULIDIdentifier,
         password: String?,
-        token: String?
+        token: String?,
     ): Message<ULIDIdentifier> = either.eager {
-        isAuthorized(ulid, token)
-            .bind()
         val creds = getCredentials(ulid, token)
             .bind()
         if (!passwordEncoder.matches(password, creds.passwordHash)) {
@@ -56,7 +69,7 @@ class AuthService(
 
     fun updatePassword(
         ulid: ULIDIdentifier,
-        body: UserCredentialsUpdateRequest
+        body: UserCredentialsUpdateRequest,
     ): Message<ServerMessage> = either.eager {
         val (token, newPassword, oldPassword) = body
         isAuthorized(ulid, token)

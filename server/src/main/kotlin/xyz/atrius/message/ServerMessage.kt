@@ -16,7 +16,7 @@ sealed class ServerMessage(
         message = "Could not find object of type ${type.simpleName}: No entry found for input $input"
     )
 
-    class NotAuthorized(token: String) : ServerMessage(
+    class NotAuthorized(token: String?) : ServerMessage(
         message = "Could not fulfill request, token $token not authorized"
     )
 

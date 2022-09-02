@@ -7,13 +7,13 @@ plugins {
 group = "xyz.atrius"
 version = "0.1"
 
-val kotestVersion = "5.3.2"
+val kotestVersion = "5.4.2"
 
 repositories {
     mavenCentral()
 }
 
-subprojects {
+allprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
     dependencies {
@@ -24,7 +24,8 @@ subprojects {
         testImplementation(kotlin("test"))
         testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
         testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
-        implementation("io.mockk:mockk:1.12.4")
+        implementation("io.kotest.extensions:kotest-assertions-arrow:1.2.5")
+        implementation("io.mockk:mockk:1.12.7")
     }
 }
 
