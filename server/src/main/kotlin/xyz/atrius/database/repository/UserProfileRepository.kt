@@ -6,4 +6,7 @@ import xyz.atrius.database.ULIDIdentifier
 import xyz.atrius.database.entity.user.UserProfile
 
 @Repository
-interface UserProfileRepository : CrudRepository<UserProfile, ULIDIdentifier>
+interface UserProfileRepository : CrudRepository<UserProfile, ULIDIdentifier> {
+
+    fun findByDisplayName(username: String): UserProfile?
+}

@@ -10,6 +10,7 @@ import xyz.atrius.dto.user.UserDeleteRequest
 import xyz.atrius.dto.user.UserProfileDTO
 import xyz.atrius.manager.UserManager
 import xyz.atrius.message.ServerMessage
+import xyz.atrius.util.Message
 import xyz.atrius.util.Response
 import xyz.atrius.util.asResponse
 import xyz.atrius.util.mergeAsResponse
@@ -71,4 +72,11 @@ class UserController(
     ): Response<ULIDIdentifier> = userManager
         .deleteUser(user, body)
         .asResponse()
+
+    @PutMapping("/user/register")
+    fun registerUser(
+        @RequestBody userInfo: UserProfileDTO
+    ): Response<Message<String>> {
+        TODO()
+    }
 }

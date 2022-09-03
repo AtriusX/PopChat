@@ -11,20 +11,40 @@ import xyz.atrius.dto.user.UserCredentialsUpdateRequest
 import xyz.atrius.dto.user.UserDeleteRequest
 import xyz.atrius.dto.user.UserProfileDTO
 import xyz.atrius.message.ServerMessage
-import xyz.atrius.service.AuthService
+import xyz.atrius.service.auth.AuthService
+import xyz.atrius.service.auth.LoginService
+import xyz.atrius.service.auth.PasswordService
+import xyz.atrius.service.auth.TokenService
 import xyz.atrius.util.Message
 
 @Component
 class UserManager(
     private val profileRepository: UserProfileRepository,
     private val authService: AuthService,
+    private val loginService: LoginService,
+    private val tokenService: TokenService,
+    private val passwordService: PasswordService
 ) {
+
+    fun login(
+        username: String,
+        password: String
+    ): Message<String> = either.eager {
+        val (userId) = getUserByUsername(username).bind()
+        loginService.login(userId, password).bind()
+    }
+
+    fun logout(
+        ulid: ULIDIdentifier,
+        token: String
+    ): Message<ServerMessage> =
+        loginService.logout(ulid, token)
 
     fun getUser(
         ulid: ULIDIdentifier,
         token: String?
     ): Message<UserProfile> = either.eager {
-        authService
+        tokenService
             .isAuthorized(ulid, token)
             .bind()
         profileRepository
@@ -39,7 +59,7 @@ class UserManager(
         body: UserProfileDTO
     ): Message<ServerMessage> = either.eager {
         val (token) = body
-        authService
+        tokenService
             .isAuthorized(ulid, token)
             .bind()
         getUser(ulid, token)
@@ -67,10 +87,21 @@ class UserManager(
                 .left()
                 .bind<ServerMessage>()
         }
-        val delete = authService
-            .isCorrectPassword(ulid, password, token)
+        tokenService
+            .isAuthorized(ulid, token)
             .bind()
-        profileRepository.deleteById(delete)
+        passwordService
+            .isCorrect(ulid, password)
+            .bind()
+        profileRepository.deleteById(ulid)
         ulid
     }
+
+    private fun getUserByUsername(
+        username: String
+    ): Message<UserProfile> = profileRepository
+        .findByDisplayName(username)
+        .rightIfNotNull {
+            ServerMessage.NotFound(UserProfile::class, username)
+        }
 }

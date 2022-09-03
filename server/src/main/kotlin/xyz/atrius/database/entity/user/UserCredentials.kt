@@ -19,4 +19,6 @@ data class UserCredentials(
 
     @Column(name = "password_hash")
     var passwordHash: String
-) : Serializable
+) : Serializable {
+    constructor(user: UserProfile, passwordHash: String) : this(user.userId, user, passwordHash)
+}

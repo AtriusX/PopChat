@@ -13,15 +13,27 @@ sealed class ServerMessage(
     object Ok : ServerMessage(message = null, error = false)
 
     class NotFound(type: KClass<*>, input: Any?) : ServerMessage(
-        message = "Could not find object of type ${type.simpleName}: No entry found for input $input"
+        message = "Could not find object of type ${type.simpleName}: No entry found for input $input."
     )
 
     class NotAuthorized(token: String?) : ServerMessage(
-        message = "Could not fulfill request, token $token not authorized"
+        message = "Could not fulfill request, token $token not authorized."
     )
 
     object WrongPassword : ServerMessage(
         message = "Incorrect password!"
+    )
+
+    class AlreadyExists(type: KClass<*>, input: Any?) : ServerMessage(
+        message = "Item id '$input' of type ${type.simpleName} already exists and cannot be overwritten."
+    )
+
+    class ExternalError(error: String) : ServerMessage(
+        message = "An error has been encountered in an external service: $error"
+    )
+
+    class NullValue(field: String) : ServerMessage(
+        message = "Field '$field' must not be null."
     )
 
     fun asResponseEntity(): ResponseEntity<ServerMessage> = ResponseEntity(

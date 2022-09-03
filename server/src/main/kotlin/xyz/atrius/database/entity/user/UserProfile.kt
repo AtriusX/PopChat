@@ -3,6 +3,7 @@ package xyz.atrius.database.entity.user
 import com.github.guepardoapps.kulid.ULID
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
+import xyz.atrius.database.ULIDIdentifier
 import xyz.atrius.dto.user.UserProfileDTO
 import xyz.atrius.transfer.DtoTranslation
 import java.io.Serializable
@@ -15,11 +16,11 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "user_profile")
-class UserProfile(
+data class UserProfile(
 
     @Id
     @Column(name = "user_id")
-    val userId: String = ULID.random(),
+    val userId: ULIDIdentifier = ULID.random(),
 
     @Column(name = "display_name")
     var displayName: String = "",
