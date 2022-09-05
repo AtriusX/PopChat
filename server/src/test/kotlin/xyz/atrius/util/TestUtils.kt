@@ -27,7 +27,8 @@ fun mockkRedisClient(mock: RedisClient.() -> Unit = {}): RedisClient {
     }
 }
 
-fun Message<ServerMessage.Ok>.shouldBeOk(): ServerMessage.Ok = shouldBeRight()
+fun Message<ServerMessage>.shouldBeOk(): ServerMessage =
+    shouldBeRight().shouldBeInstanceOf<ServerMessage.Ok>()
 
-inline fun <reified T : ServerMessage> Message<ServerMessage.Ok>.shouldBeMessage() =
+inline fun <reified T : ServerMessage> Message<*>.shouldBeMessage() =
     shouldBeLeft().shouldBeInstanceOf<T>()
