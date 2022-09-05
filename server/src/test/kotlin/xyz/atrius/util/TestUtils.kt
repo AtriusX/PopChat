@@ -3,6 +3,7 @@ package xyz.atrius.util
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.core.spec.style.scopes.DescribeSpecContainerScope
+import io.kotest.matchers.string.shouldNotMatch
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.lettuce.core.RedisClient
 import io.mockk.every
@@ -32,3 +33,8 @@ fun Message<ServerMessage>.shouldBeOk(): ServerMessage =
 
 inline fun <reified T : ServerMessage> Message<*>.shouldBeMessage() =
     shouldBeLeft().shouldBeInstanceOf<T>()
+
+fun String.shouldMatchUrlBase64() {
+    this shouldNotMatch regex("[^A-Za-z0-9_\\-=]")
+    println("'$this' passes as Base-64!")
+}
