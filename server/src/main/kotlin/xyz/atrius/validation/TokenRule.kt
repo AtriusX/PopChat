@@ -7,20 +7,20 @@ import org.springframework.stereotype.Component
 import xyz.atrius.database.ULIDIdentifier
 import xyz.atrius.message.ServerMessage
 import xyz.atrius.util.*
-import xyz.atrius.validation.TokenRule.TokenValidationRuleRequest
+import xyz.atrius.validation.TokenRule.TokenRuleRequest
 
 @Component
 class TokenRule(
     private val redisClient: RedisClient,
-) : ValidationRule<TokenValidationRuleRequest> {
+) : ValidationRule<TokenRuleRequest> {
 
-    data class TokenValidationRuleRequest(
+    data class TokenRuleRequest(
         val ulid: ULIDIdentifier,
         val token: String?,
     )
 
     override fun validate(
-        input: TokenValidationRuleRequest,
+        input: TokenRuleRequest,
     ): Message<ServerMessage.Ok> = either.eager {
         val (ulid, token) = input
         val cache = redisClient

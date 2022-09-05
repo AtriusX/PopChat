@@ -11,7 +11,7 @@ import xyz.atrius.util.Message
 import xyz.atrius.util.mockkRedisClient
 import xyz.atrius.util.shouldBeMessage
 import xyz.atrius.util.shouldBeOk
-import xyz.atrius.validation.TokenRule.TokenValidationRuleRequest
+import xyz.atrius.validation.TokenRule.TokenRuleRequest
 
 class TokenRuleSpec : DescribeSpec({
 
@@ -39,7 +39,7 @@ class TokenRuleSpec : DescribeSpec({
             describe("A token is successfully authorized") {
                 beforeTest {
                     result = validator.validate(
-                        TokenValidationRuleRequest(
+                        TokenRuleRequest(
                             testUlid,
                             testToken
                         )
@@ -55,7 +55,7 @@ class TokenRuleSpec : DescribeSpec({
                 beforeTest {
                     every { redisClient.connect().sync().get(any()) } returns null
                     result = validator.validate(
-                        TokenValidationRuleRequest(
+                        TokenRuleRequest(
                             testUlid,
                             testToken
                         )
@@ -71,7 +71,7 @@ class TokenRuleSpec : DescribeSpec({
                 beforeTest {
                     every { redisClient.connect().sync().get(any()) } returns "bar_token"
                     result = validator.validate(
-                        TokenValidationRuleRequest(
+                        TokenRuleRequest(
                             testUlid,
                             testToken
                         )
@@ -87,7 +87,7 @@ class TokenRuleSpec : DescribeSpec({
                 beforeTest {
                     every { redisClient.connect() } throws RedisConnectionException("fail")
                     result = validator.validate(
-                        TokenValidationRuleRequest(
+                        TokenRuleRequest(
                             testUlid,
                             testToken
                         )
